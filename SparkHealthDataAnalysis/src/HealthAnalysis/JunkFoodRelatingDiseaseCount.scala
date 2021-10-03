@@ -44,15 +44,16 @@ object JunkFoodRelatingDiseaseCount {
 //             .show(5)
                   
 
+       import org.apache.spark.sql.functions._  // import to use expr() in withColumn() function
        val dfQuestionnaire=spark.read
                   .format("csv")
                   .option("path","D:/HealthDataSpark/input/questionnaire.csv")
                   .option("header",true)
                   .schema("seqn String, rooms Integer, milkDiet Integer, junkFoodFrequency Integer")  //  .option("inferSchema",true)
                   .load
-//            .selectExpr("junkFoodFrequency", "coalesce(junkFoodFrequency,0)") 
+//                .selectExpr("junkFoodFrequency", "coalesce(junkFoodFrequency,0)") 
                   .na.fill(0,Array("junkFoodFrequency"))
-//            .withColumn("junkFoodFrequency", expr("coalesce(junkFoodFrequency,0)"))
+//                  .withColumn("junkFoodFrequency", expr("coalesce(junkFoodFrequency,0)")) // working fine after import
                   .drop("rooms")
                   .drop("milkDiet")
 
