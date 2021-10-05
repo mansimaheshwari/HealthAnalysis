@@ -28,17 +28,27 @@ object Disease_AverageNutrientIntake {
     
         
        
-       val rdd1=spark.sparkContext.textFile("D:/HealthDataSpark/input/medications.csv")
-                                   .map(x=>(x.split(",")(0),x.split(",")(1).toUpperCase))
-                                   .filter(x=> x._2.nonEmpty)
-                                   .flatMapValues(x=>x.split(";"))
+       import spark.implicits._  
+       import org.apache.spark.sql.functions._  // import to use expr() in withColumn() function
+       val dfMedications=spark.read
+                  .format("csv")
+                  .option("path","D:/HealthDataSpark/input/medications.csv")
+                  .option("header",true)
+                  .schema("seqn String,noOfMedicines Integer,drugName String")  //  .option("inferSchema",true)
+                  .load
+                  .filter(x=> !x.isNullAt(2))
+                  .flatMap(x=>x.getString(2).split(";").map((x.getString(0),_)))
+                  .toDF("seqn","drugName")
+
+//       val rdd1=spark.sparkContext.textFile("D:/HealthDataSpark/input/medications.csv")
+//                                   .map(x=>(x.split(",")(0),x.split(",")(2)))
+//                                   .filter(x=> x._2.nonEmpty)
+//                                   .flatMapValues(x=>x.split(";"))
 //                                   .take(10)
 //                                   .foreach(println)
                                    
                          
 
-       import spark.implicits._                        
-       val dfMedications=rdd1.toDF("seqn","drugName")
 
                        
 
@@ -78,7 +88,7 @@ object Disease_AverageNutrientIntake {
           .mode(SaveMode.Overwrite)
           .option("path","D:/HealthDataSpark/output/Disease_AverageNutrientIntake")
           .save
-//      scala.io.StdIn.readLine()
+      scala.io.StdIn.readLine()
       spark.close()
   }
   
