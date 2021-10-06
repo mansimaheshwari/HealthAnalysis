@@ -47,6 +47,7 @@ object DemographicsPartitionByLocation {
           .format("json")
           .mode(SaveMode.Overwrite)
           .partitionBy("location")
+          .option("header", true)
           .option("path","D:/HealthDataSpark/output/DemographicsPartitionByLocation")
           .save
       scala.io.StdIn.readLine()

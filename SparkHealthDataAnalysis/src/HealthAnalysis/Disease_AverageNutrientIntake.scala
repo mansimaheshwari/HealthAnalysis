@@ -86,6 +86,7 @@ object Disease_AverageNutrientIntake {
       out.write
           .format("csv")
           .mode(SaveMode.Overwrite)
+          .option("header", true)
           .option("path","D:/HealthDataSpark/output/Disease_AverageNutrientIntake")
           .save
       scala.io.StdIn.readLine()

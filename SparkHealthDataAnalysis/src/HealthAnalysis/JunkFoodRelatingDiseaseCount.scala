@@ -74,6 +74,7 @@ object JunkFoodRelatingDiseaseCount {
       out.write
           .format("csv")
           .mode(SaveMode.Overwrite)
+          .option("header", true)
           .option("path","D:/HealthDataSpark/output/JunkFoodRelatingDiseaseCount")
           .save
                                   

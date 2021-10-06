@@ -97,6 +97,7 @@ object DrugFrequencyByLocation {
       out.write
           .format("csv")
           .mode(SaveMode.Overwrite)
+          .option("header", true)
           .option("path","D:/HealthDataSpark/output/DrugFrequencyByLocation")
           .save
           

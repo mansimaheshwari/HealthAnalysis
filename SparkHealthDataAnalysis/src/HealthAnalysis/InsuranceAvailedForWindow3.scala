@@ -55,6 +55,7 @@ object InsuranceAvailedForWindow3 {
       out.write
           .format("csv")
           .mode(SaveMode.Overwrite)
+          .option("header", true)
           .option("path","D:/HealthDataSpark/output/InsuranceAvailedForWindow3")
           .save
       scala.io.StdIn.readLine()
