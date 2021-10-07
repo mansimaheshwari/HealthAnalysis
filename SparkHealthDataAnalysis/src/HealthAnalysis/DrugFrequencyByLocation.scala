@@ -86,9 +86,17 @@ object DrugFrequencyByLocation {
                               
 
       join.createOrReplaceTempView("Drugs")
-      val out = spark.sql("""select drugName, location, count(frequency) as frequency from Drugs 
-                                  group by drugName, location 
-                                  order by drugName, location, frequency desc""")
+      
+                         
+      val out = spark.sql("""select drugName, 
+                                 SUM(CASE WHEN (location=1) THEN 1 ELSE 0 END) AS location1, 
+                                 SUM(CASE WHEN (location=2) THEN 1 ELSE 0 END) AS location2, 
+                                 SUM(CASE WHEN (location=3) THEN 1 ELSE 0 END) AS location3, 
+                                 SUM(CASE WHEN (location=4) THEN 1 ELSE 0 END) AS location4,
+                                 SUM(CASE WHEN (location=5) THEN 1 ELSE 0 END) AS location5
+                             from Drugs 
+                             group by drugName
+                             order by drugName desc""")
 //                      .show(10)
                   
                   
