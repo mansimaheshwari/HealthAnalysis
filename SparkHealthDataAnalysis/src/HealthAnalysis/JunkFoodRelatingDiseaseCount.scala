@@ -60,6 +60,16 @@ object JunkFoodRelatingDiseaseCount {
 
 //             .show(5)
 
+           val n=args(0).toInt
+           
+           
+//                  println(args(0))   
+//                  println(n)
+//                  println(f"your frequency is $n")
+//                  println(s"your frequency is $n")
+//                  
+                  
+                  
                   
        import org.apache.spark.sql.functions._  // import to use agg() function
        val joinCond=dfQuestionnaire("seqn")===dfMedications("seqn")
@@ -68,16 +78,22 @@ object JunkFoodRelatingDiseaseCount {
                               .drop(dfQuestionnaire("seqn"))
                               .drop(dfMedications("seqn"))
                               .groupBy("drugName")
-                              .agg(avg("junkFoodFrequency"))
+                              .agg(avg("junkFoodFrequency").as("AverageJunkFoodFrequency"))
+                              .filter(s"AverageJunkFoodFrequency > $n")
+                              .withColumn("SevirityLevel", 
+                                    expr(""" case when AverageJunkFoodFrequency<=12 then 'can have 3-4 times more' 
+                                                   when AverageJunkFoodFrequency>12 and AverageJunkFoodFrequency<=24 then 'limit reached' 
+                                                   when (AverageJunkFoodFrequency>24) then 'dangerousFrequency' end 
+                                        """))
                               .orderBy("drugName")
-//                      .show(10)
+                      .show(30)
 
-      out.write
-          .format("csv")
-          .mode(SaveMode.Overwrite)
-          .option("header", true)
-          .option("path","D:/HealthDataSpark/output/JunkFoodRelatingDiseaseCount")
-          .save
+//      out.write
+//          .format("csv")
+//          .mode(SaveMode.Overwrite)
+//          .option("header", true)
+//          .option("path","D:/HealthDataSpark/output/JunkFoodRelatingDiseaseCount")
+//          .save
                                   
       scala.io.StdIn.readLine()
       spark.close()
