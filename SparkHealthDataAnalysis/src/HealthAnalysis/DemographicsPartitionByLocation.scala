@@ -28,6 +28,7 @@ object DemographicsPartitionByLocation {
       
         val spark=SparkSession.builder()                      
                             .config(sparkConf)
+                            .config("spark.sql.shuffle.partitions","10")    // to make the no of partitions to 3 instead of 200 (spark default)                          
                             .getOrCreate()
     
       val s=spark.read
