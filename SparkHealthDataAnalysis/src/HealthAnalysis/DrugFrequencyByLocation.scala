@@ -89,17 +89,26 @@ object DrugFrequencyByLocation {
       join.createOrReplaceTempView("Drugs")
       
                          
-      val out = spark.sql("""select drugName, 
-                                 SUM(CASE WHEN (location=1) THEN 1 ELSE 0 END) AS location1, 
-                                 SUM(CASE WHEN (location=2) THEN 1 ELSE 0 END) AS location2, 
-                                 SUM(CASE WHEN (location=3) THEN 1 ELSE 0 END) AS location3, 
-                                 SUM(CASE WHEN (location=4) THEN 1 ELSE 0 END) AS location4,
-                                 SUM(CASE WHEN (location=5) THEN 1 ELSE 0 END) AS location5
-                             from Drugs 
-                             group by drugName
-                             order by drugName desc""")
+//      val out = spark.sql("""select drugName, 
+//                                 SUM(CASE WHEN (location=1) THEN 1 ELSE 0 END) AS location1, 
+//                                 SUM(CASE WHEN (location=2) THEN 1 ELSE 0 END) AS location2, 
+//                                 SUM(CASE WHEN (location=3) THEN 1 ELSE 0 END) AS location3, 
+//                                 SUM(CASE WHEN (location=4) THEN 1 ELSE 0 END) AS location4,
+//                                 SUM(CASE WHEN (location=5) THEN 1 ELSE 0 END) AS location5
+//                             from Drugs 
+//                             group by drugName
+//                             order by drugName desc""")
 //                      .show(10)
                   
+      
+       import org.apache.spark.sql.functions._  // import to use agg() function
+      val out = spark.sql("""select drugName, location , frequency
+                             from Drugs """)
+                             .withColumn("frequency", expr("coalesce(frequency,0)"))
+                             .groupBy("drugName")
+                             .pivot("location")
+                             .sum("frequency")
+//                      .show(10)
                   
                 
                     
