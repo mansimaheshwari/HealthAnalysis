@@ -102,8 +102,7 @@ object SparkStreamingCountByAgeAndLocation {
 val query = x.writeStream
 //          .format("csv")
 //          .option("path", "D:/HealthDataSpark/output/SparkStreamingCountByAgeAndLocation")
-//          .outputMode("complete")  // both modes working fine
-          .outputMode("update")
+          .outputMode("complete")  
           .option("header", true)
           .option("checkpointLocation","D:/HealthDataSpark/output/SparkStreamingCountByAgeAndLocation/checkPoint")
           .foreach(writerForText)
