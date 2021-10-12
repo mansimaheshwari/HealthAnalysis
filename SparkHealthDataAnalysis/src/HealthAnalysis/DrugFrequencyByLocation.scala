@@ -7,10 +7,9 @@ import org.apache.log4j.Logger
 import org.apache.spark.sql.SaveMode
 
 
-
-
 object DrugFrequencyByLocation {
   
+//  configurations for SparkSession.builder()
    def sparkConf : SparkConf={
         val sConf=new SparkConf
         sConf.set("spark.app.name", "Drug Frequency By Location")
@@ -21,7 +20,6 @@ object DrugFrequencyByLocation {
   def main(args : Array[String]){
     
       Logger.getLogger("org").setLevel(Level.ERROR)
-      Logger.getLogger(getClass.getName).error("Drug Frequency By Location")
       
         val spark=SparkSession.builder()                      
                             .config(sparkConf)
@@ -30,15 +28,15 @@ object DrugFrequencyByLocation {
     
         
                    
-       import spark.implicits._    
+       import spark.implicits._     // to used operations on df like filter etc.
        val dfMedications=spark.read
                   .format("csv")
                   .option("path","D:/HealthDataSpark/input/medications.csv")
                   .option("header",true)
                   .schema("seqn String,noOfMedicines Integer,drugName String")  //  .option("inferSchema",true)
                   .load
-                  .filter(x=> !x.isNullAt(2))
-                  .rdd
+                  .filter(x=> !x.isNullAt(2))    //filter out the data where deugName is missing
+                  .rdd  //   converting to rdd so that we can use rdd specific functions like flatMapValues()
                   .map(x=>(x.getString(0),x.getString(2)))              
                   .flatMapValues(x=>x.split(";"))                       //| .flatMap(x=>x._2.split(";").map((x._1,_,1)))
                   .map(x=>(x._1,x._2,1))  //output : (32615,insulin,1)  //| 
@@ -59,11 +57,6 @@ object DrugFrequencyByLocation {
 ////                                   .take(10)
 ////                                   .foreach(println)
 //                                   
-//                                   
-////(SEQN,DRUGNAME,1)
-////(73557,INSULIN,1)
-////(73558,GABAPENTIN,1)    
-//
 //       import spark.implicits._                        
 //       val dfMedications=rdd1.toDF("seqn","drugName","frequency")
 
