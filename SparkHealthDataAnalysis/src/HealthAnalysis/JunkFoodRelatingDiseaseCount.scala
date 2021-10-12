@@ -79,7 +79,7 @@ object JunkFoodRelatingDiseaseCount {
                               .drop(dfMedications("seqn"))
                               .groupBy("drugName")
                               .agg(avg("junkFoodFrequency").as("AverageJunkFoodFrequency"))
-                              .filter(s"AverageJunkFoodFrequency > $n")
+                              .filter(s"AverageJunkFoodFrequency <= $n")
                               .withColumn("SevirityLevel", 
                                     expr(""" case when AverageJunkFoodFrequency<=12 then 'can have 3-4 times more' 
                                                    when AverageJunkFoodFrequency>12 and AverageJunkFoodFrequency<=24 then 'limit reached' 
