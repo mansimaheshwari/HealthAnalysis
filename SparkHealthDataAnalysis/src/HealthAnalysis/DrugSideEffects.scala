@@ -11,6 +11,7 @@ import org.apache.spark.sql.types.StructField
 
 object DrugSideEffects {
   
+//  configurations for SparkSession.builder()
    def sparkConf : SparkConf={
         val sConf=new SparkConf
         sConf.set("spark.app.name", "DrugSideEffects")
@@ -21,7 +22,6 @@ object DrugSideEffects {
   def main(args : Array[String]){
     
       Logger.getLogger("org").setLevel(Level.ERROR)
-      Logger.getLogger(getClass.getName).error("DrugSideEffects")
       
         val spark=SparkSession.builder()                      
                             .config(sparkConf)
@@ -30,17 +30,17 @@ object DrugSideEffects {
     
         
 
-//       val bcast=spark.sparkContext.broadcast(args)
-       import spark.implicits._
        val sc=spark.sparkContext
        
        
-       sc.parallelize(args)
+//       defining schema of table
        val schema = StructType(List(
               StructField("drugs", StringType)
               ))
     
     
+       import spark.implicits._ // to used operations like parellalize
+//       to create rdd of the array: arguments received from run configurations : program arguments
        val df1=  sc.parallelize(args).toDF()
                                      .map(x=>x.getString(0).toLowerCase())
                                      .toDF("drugs")
@@ -62,7 +62,7 @@ object DrugSideEffects {
 //            .select("*")  
 //             .show(5)
                         
-       import org.apache.spark.sql.functions._  // import to use agg() function
+//       import org.apache.spark.sql.functions._  // import to use agg() function
 
        val joinCond=df1("drugs")===df2("drugName")
        val joinType="inner"        
@@ -75,13 +75,7 @@ object DrugSideEffects {
 //                  .select("*")  
                    .show()
                   
-                  
-//      out.write
-//          .format("csv")
-//          .mode(SaveMode.Overwrite)
-//          .option("header", true)
-//          .option("path","D:/HealthDataSpark/output/JunkFoodRelatingDiseaseCount")
-//          .save
+                 
                                   
       scala.io.StdIn.readLine()
       spark.close()
