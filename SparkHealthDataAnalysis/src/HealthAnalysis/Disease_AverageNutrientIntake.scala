@@ -10,6 +10,7 @@ import org.apache.spark.sql.SaveMode
 
 object Disease_AverageNutrientIntake {
   
+//  configurations for SparkSession.builder()
    def sparkConf : SparkConf={
         val sConf=new SparkConf
         sConf.set("spark.app.name", "Disease and Average Nutrient Intake")
@@ -20,7 +21,6 @@ object Disease_AverageNutrientIntake {
   def main(args : Array[String]){
     
       Logger.getLogger("org").setLevel(Level.ERROR)
-      Logger.getLogger(getClass.getName).error("Disease and Average Nutrient Intake")
       
         val spark=SparkSession.builder()                      
                             .config(sparkConf)
@@ -29,7 +29,7 @@ object Disease_AverageNutrientIntake {
     
         
        
-       import spark.implicits._  
+       import spark.implicits._   // to used operations on df like filter etc.
        import org.apache.spark.sql.functions._  // import to use expr() in withColumn() function
        val dfMedications=spark.read
                   .format("csv")
@@ -71,6 +71,7 @@ object Disease_AverageNutrientIntake {
                               .drop(dfMedications("seqn"))
                               
 
+//      simulating sql tables            
       join.createOrReplaceTempView("Drugs")
       val out = spark.sql("""select drugName DrugName, avg(carbohyderates) as AverageCarbohyderates, 
                                   avg(sugar) as AverageSugar,
@@ -90,6 +91,8 @@ object Disease_AverageNutrientIntake {
           .option("header", true)
           .option("path","D:/HealthDataSpark/output/Disease_AverageNutrientIntake")
           .save
+          
+          
       scala.io.StdIn.readLine()
       spark.close()
   }
