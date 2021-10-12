@@ -19,6 +19,8 @@ object DemographicsPartitionByLocation {
     //                        .master("local[*]")
     //                        .getOrCreate()
          
+      
+//  configurations for SparkSession.builder()
       def sparkConf : SparkConf={
         val sConf=new SparkConf
         sConf.set("spark.app.name", "Partitioning File")
@@ -39,18 +41,22 @@ object DemographicsPartitionByLocation {
                   .load
 //                  .printSchema
                   
+//      simulating sql tables            
       s.createOrReplaceTempView("demographics")
       val out = spark.sql("select * from demographics")
-//                    .show(1) 
+//                    .show(5) 
                 
                     
       out.write
           .format("json")
           .mode(SaveMode.Overwrite)
+//          partitioning the output
           .partitionBy("location")
           .option("header", true)
           .option("path","D:/HealthDataSpark/output/DemographicsPartitionByLocation")
           .save
+          
+          
       scala.io.StdIn.readLine()
       spark.close()
   }
