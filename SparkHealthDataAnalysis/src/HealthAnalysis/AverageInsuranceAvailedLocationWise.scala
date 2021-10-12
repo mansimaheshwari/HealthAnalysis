@@ -11,6 +11,7 @@ import org.apache.spark.sql.expressions.Window
 
 object AverageInsuranceAvailedLocationWise {
   
+//  configurations for SparkSession.builder()
    def sparkConf : SparkConf={
         val sConf=new SparkConf
         sConf.set("spark.app.name", "Insurance Availed For particular location")
@@ -21,7 +22,7 @@ object AverageInsuranceAvailedLocationWise {
   def main(args : Array[String]){
     
       Logger.getLogger("org").setLevel(Level.ERROR)
-      Logger.getLogger(getClass.getName).error("Insurance Availed For particular location")
+//      Logger.getLogger(getClass.getName).error("Insurance Availed For particular location")
       
         val spark=SparkSession.builder()                      
                             .config(sparkConf)
@@ -35,6 +36,7 @@ object AverageInsuranceAvailedLocationWise {
                   .option("header",true)
                   .schema("seqn Integer, familyMember Integer, location Integer, income Integer, insuranceAmount Double")  //  .option("inferSchema",true)
                   .load
+//                  ------   to fill the nulls with 0
                   .na.fill(0,Array("insuranceAmount"))
                   .drop("familyMember")
                   .drop("income")
@@ -45,15 +47,17 @@ object AverageInsuranceAvailedLocationWise {
        val out=dfDemographic.groupBy("location")
                              .agg(expr("avg(insuranceAmount)"))
                              .orderBy("location")
-                             .show()
+//                             .show()
                                    
                 
-//      out.write
-//          .format("csv")
-//          .mode(SaveMode.Overwrite)
-//          .option("header", true)
-//          .option("path","D:/HealthDataSpark/output/InsuranceAvailedForWindow3")
-//          .save
+      out.write
+          .format("csv")
+          .mode(SaveMode.Overwrite)
+          .option("header", true)
+          .option("path","D:/HealthDataSpark/output/AverageInsuranceAvailedLocationWise")
+          .save
+          
+          
       scala.io.StdIn.readLine()
       spark.close()
   }
