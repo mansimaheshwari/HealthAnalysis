@@ -101,16 +101,16 @@ object DrugFrequencyByLocation {
                              .groupBy("drugName")
                              .pivot("location")
                              .sum("frequency")
-                      .show(10)
+//                      .show(10)
                   
                 
                     
-//      out.write
-//          .format("csv")
-//          .mode(SaveMode.Overwrite)
-//          .option("header", true)
-//          .option("path","D:/HealthDataSpark/output/DrugFrequencyByLocation")
-//          .save
+      out.write
+          .format("csv")
+          .mode(SaveMode.Overwrite)
+          .option("header", true)
+          .option("path","D:/HealthDataSpark/output/DrugFrequencyByLocation")
+          .save
           
           
       scala.io.StdIn.readLine()
