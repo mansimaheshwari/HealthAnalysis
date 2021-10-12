@@ -11,6 +11,7 @@ import org.apache.spark.sql.expressions.Window
 
 object InsuranceAvailedForWindow3 {
   
+//  configurations for SparkSession.builder()
    def sparkConf : SparkConf={
         val sConf=new SparkConf
         sConf.set("spark.app.name", "Insurance Availed For Window size = 3")
@@ -21,7 +22,6 @@ object InsuranceAvailedForWindow3 {
   def main(args : Array[String]){
     
       Logger.getLogger("org").setLevel(Level.ERROR)
-      Logger.getLogger(getClass.getName).error("Insurance Availed For Window size = 3")
       
         val spark=SparkSession.builder()                      
                             .config(sparkConf)
@@ -42,6 +42,7 @@ object InsuranceAvailedForWindow3 {
                   .option("header",true)
                   .schema("seqn Integer, familyMember Integer, location Integer, income Integer, insuranceAmount Double")  //  .option("inferSchema",true)
                   .load
+//                  ------   to fill the nulls with 0
                   .na.fill(0,Array("insuranceAmount"))
                   .drop("familyMember")
                   .drop("income")
@@ -59,6 +60,8 @@ object InsuranceAvailedForWindow3 {
           .option("header", true)
           .option("path","D:/HealthDataSpark/output/InsuranceAvailedForWindow3")
           .save
+          
+          
       scala.io.StdIn.readLine()
       spark.close()
   }
