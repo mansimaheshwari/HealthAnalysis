@@ -9,6 +9,7 @@ import org.apache.spark.sql.SaveMode
 
 object JunkFoodRelatingDiseaseCount {
   
+//  configurations for SparkSession.builder()
    def sparkConf : SparkConf={
         val sConf=new SparkConf
         sConf.set("spark.app.name", "Junk Food Relating Disease Count")
@@ -19,7 +20,6 @@ object JunkFoodRelatingDiseaseCount {
   def main(args : Array[String]){
     
       Logger.getLogger("org").setLevel(Level.ERROR)
-      Logger.getLogger(getClass.getName).error("Junk Food Relating Disease Count")
       
         val spark=SparkSession.builder()                      
                             .config(sparkConf)
@@ -52,23 +52,16 @@ object JunkFoodRelatingDiseaseCount {
                   .option("header",true)
                   .schema("seqn String, rooms Integer, milkDiet Integer, junkFoodFrequency Integer")  //  .option("inferSchema",true)
                   .load
-//                .selectExpr("junkFoodFrequency", "coalesce(junkFoodFrequency,0)") 
-                  .na.fill(0,Array("junkFoodFrequency"))
+//                  ------   to fill the nulls with 0
 //                  .withColumn("junkFoodFrequency", expr("coalesce(junkFoodFrequency,0)")) // working fine after import
+                  .na.fill(0,Array("junkFoodFrequency"))
                   .drop("rooms")
                   .drop("milkDiet")
 
 //             .show(5)
 
            val n=args(0).toInt
-           
-           
-//                  println(args(0))   
-//                  println(n)
-//                  println(f"your frequency is $n")
-//                  println(s"your frequency is $n")
-//                  
-                  
+                        
                   
                   
        import org.apache.spark.sql.functions._  // import to use agg() function
@@ -86,14 +79,14 @@ object JunkFoodRelatingDiseaseCount {
                                                    when (AverageJunkFoodFrequency>24) then 'dangerousFrequency' end 
                                         """))
                               .orderBy("drugName")
-                      .show(30)
+//                      .show(30)
 
-//      out.write
-//          .format("csv")
-//          .mode(SaveMode.Overwrite)
-//          .option("header", true)
-//          .option("path","D:/HealthDataSpark/output/JunkFoodRelatingDiseaseCount")
-//          .save
+      out.write
+          .format("csv")
+          .mode(SaveMode.Overwrite)
+          .option("header", true)
+          .option("path","D:/HealthDataSpark/output/JunkFoodRelatingDiseaseCount")
+          .save
                                   
       scala.io.StdIn.readLine()
       spark.close()
