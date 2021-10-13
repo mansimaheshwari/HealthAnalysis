@@ -33,7 +33,7 @@ object Disease_AverageNutrientIntake {
        import org.apache.spark.sql.functions._  // import to use expr() in withColumn() function
        val dfMedications=spark.read
                   .format("csv")
-                  .option("path","D:/HealthDataSpark/input/medications.csv")
+                  .option("path","inputFiles/medications.csv")
                   .option("header",true)
                   .schema("seqn String,noOfMedicines Integer,drugName String")  //  .option("inferSchema",true)
                   .load
@@ -55,7 +55,7 @@ object Disease_AverageNutrientIntake {
 
        val dfDemographic=spark.read
                   .format("csv")
-                  .option("path","D:/HealthDataSpark/input/diet.csv")
+                  .option("path","inputFiles/diet.csv")
                   .option("header",true)
                   .schema("seqn String,carbohyderates Double,sugar Double,calcium Double, waterIntake Double")  //  .option("inferSchema",true)
                   .load
@@ -89,7 +89,7 @@ object Disease_AverageNutrientIntake {
           .format("csv")
           .mode(SaveMode.Overwrite)
           .option("header", true)
-          .option("path","D:/HealthDataSpark/output/Disease_AverageNutrientIntake")
+          .option("path","outputFiles/Disease_AverageNutrientIntake")
           .save
           
           

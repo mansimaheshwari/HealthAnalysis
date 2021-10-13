@@ -32,7 +32,7 @@ object JunkFoodRelatingDiseaseCount {
        import spark.implicits._  
        val dfMedications=spark.read
                   .format("csv")
-                  .option("path","D:/HealthDataSpark/input/medications.csv")
+                  .option("path","inputFiles/medications.csv")
                   .option("header",true)
                   .schema("seqn String,noOfMedicines Integer,drugName String")  //  .option("inferSchema",true)
                   .load
@@ -48,7 +48,7 @@ object JunkFoodRelatingDiseaseCount {
        import org.apache.spark.sql.functions._  // import to use expr() in withColumn() function
        val dfQuestionnaire=spark.read
                   .format("csv")
-                  .option("path","D:/HealthDataSpark/input/questionnaire.csv")
+                  .option("path","inputFiles/questionnaire.csv")
                   .option("header",true)
                   .schema("seqn String, rooms Integer, milkDiet Integer, junkFoodFrequency Integer")  //  .option("inferSchema",true)
                   .load
@@ -85,9 +85,9 @@ object JunkFoodRelatingDiseaseCount {
           .format("csv")
           .mode(SaveMode.Overwrite)
           .option("header", true)
-          .option("path","D:/HealthDataSpark/output/JunkFoodRelatingDiseaseCount")
+          .option("path","outputFiles/JunkFoodRelatingDiseaseCount")
           .save
-                                  
+                               
       scala.io.StdIn.readLine()
       spark.close()
   }

@@ -32,7 +32,7 @@ object AverageInsuranceAvailedLocationWise {
         
        val dfDemographic=spark.read
                   .format("csv")
-                  .option("path","D:/HealthDataSpark/input/demographic.csv")
+                  .option("path","inputFiles/demographic.csv")
                   .option("header",true)
                   .schema("seqn Integer, familyMember Integer, location Integer, income Integer, insuranceAmount Double")  //  .option("inferSchema",true)
                   .load
@@ -54,7 +54,7 @@ object AverageInsuranceAvailedLocationWise {
           .format("csv")
           .mode(SaveMode.Overwrite)
           .option("header", true)
-          .option("path","D:/HealthDataSpark/output/AverageInsuranceAvailedLocationWise")
+          .option("path","outputFiles/AverageInsuranceAvailedLocationWise")
           .save
           
           

@@ -7,6 +7,7 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.types.StructField
+import org.apache.spark.sql.SaveMode
 
 
 object DrugSideEffects {
@@ -53,7 +54,7 @@ object DrugSideEffects {
   
        val df2=spark.read
                   .format("csv")
-                  .option("path","D:/HealthDataSpark/input/drugSideEffect.csv")
+                  .option("path","inputFiles/drugSideEffect.csv")
                   .option("header",true)
                   .schema("drugName String, sideEffect String")  //  .option("inferSchema",true)
                   .load
@@ -66,15 +67,23 @@ object DrugSideEffects {
 
        val joinCond=df1("drugs")===df2("drugName")
        val joinType="inner"        
-                  df2.join(df1,joinCond,joinType)
+       val out = df2.join(df1,joinCond,joinType)
                   .drop(df1("drugs"))
                   .drop(df2("drugName"))
                   .flatMap(x=>x.getString(0).split(","))
                   .toDF("Side_Effect")
                   .dropDuplicates("Side_Effect")
 //                  .select("*")  
-                   .show()
-                  
+//                   .show()
+                 
+      out.write
+          .format("csv")
+          .mode(SaveMode.Overwrite)
+          .option("header", true)
+          .option("path","outputFiles/DrugSideEffects")
+          .save
+          
+           
                  
                                   
       scala.io.StdIn.readLine()

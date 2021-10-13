@@ -26,7 +26,6 @@ object SparkStreamingCountByAgeAndLocation {
       
       
       Logger.getLogger("org").setLevel(Level.ERROR)
-      Logger.getLogger(getClass.getName).error("SparkStreamingCountByAgeAndLocation")
       
       val spark=SparkSession.builder()                      
 //                            .config(sparkConf)
@@ -39,7 +38,7 @@ object SparkStreamingCountByAgeAndLocation {
                             
       var s=spark.readStream
                   .format("csv")
-                  .option("path","D:/HealthDataSpark/input/streaming")
+                  .option("path","inputFiles/streaming")
                   .option("header",true)
                   .schema("seqn Integer, familyMember Integer, location Integer, income Integer, insuranceAmount Double, age Integer")  //  .option("inferSchema",true)
                   .load
@@ -67,24 +66,14 @@ object SparkStreamingCountByAgeAndLocation {
       
       
       
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
  val writerForText = new ForeachWriter[Row] {
     var fileWriter: FileWriter = _
 
    
 
     override def open(partitionId: Long, version: Long): Boolean = {
-      FileUtils.forceMkdir(new File(s"D:/HealthDataSpark/output/SparkStreamingCountByAgeAndLocation/${partitionId}"))
-      fileWriter = new FileWriter(new File(s"D:/HealthDataSpark/output/SparkStreamingCountByAgeAndLocation/${partitionId}/temp.csv"))
-//      fileR = new FileReader(new File(s"D:/HealthDataSpark/output/SparkStreamingCountByAgeAndLocation/${partitionId}/temp.csv"))
-      
+      FileUtils.forceMkdir(new File(s"outputFiles/SparkStreamingCountByAgeAndLocation/${partitionId}"))
+      fileWriter = new FileWriter(new File(s"outputFiles/SparkStreamingCountByAgeAndLocation/${partitionId}/temp.csv"))
       true
     }
     
@@ -101,10 +90,10 @@ object SparkStreamingCountByAgeAndLocation {
 
 val query = x.writeStream
 //          .format("csv")
-//          .option("path", "D:/HealthDataSpark/output/SparkStreamingCountByAgeAndLocation")
+//          .option("path", "outputFiles/SparkStreamingCountByAgeAndLocation")
           .outputMode("complete")  
           .option("header", true)
-          .option("checkpointLocation","D:/HealthDataSpark/output/SparkStreamingCountByAgeAndLocation/checkPoint")
+          .option("checkpointLocation","outputFiles/SparkStreamingCountByAgeAndLocation/checkPoint")
           .foreach(writerForText)
           .start()
           .awaitTermination()

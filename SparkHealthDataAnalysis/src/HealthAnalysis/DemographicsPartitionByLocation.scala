@@ -12,7 +12,7 @@ object DemographicsPartitionByLocation {
   
   def main(args : Array[String]){
       Logger.getLogger("org").setLevel(Level.ERROR)
-      Logger.getLogger(getClass.getName).error("Spark Object Word Count")
+//      Logger.getLogger(getClass.getName).error("Spark Object Word Count")
       
     //  val spark=SparkSession.builder()
     //                        .appName("Spark Object Word Count")
@@ -35,7 +35,7 @@ object DemographicsPartitionByLocation {
     
       val s=spark.read
                   .format("csv")
-                  .option("path","D:/HealthDataSpark/input/demographic.csv")
+                  .option("path","inputFiles/demographic.csv")
                   .option("header",true)
                   .option("inferSchema",true)
                   .load
@@ -53,7 +53,7 @@ object DemographicsPartitionByLocation {
 //          partitioning the output
           .partitionBy("location")
           .option("header", true)
-          .option("path","D:/HealthDataSpark/output/DemographicsPartitionByLocation")
+          .option("path","outputFiles/DemographicsPartitionByLocation")
           .save
           
           

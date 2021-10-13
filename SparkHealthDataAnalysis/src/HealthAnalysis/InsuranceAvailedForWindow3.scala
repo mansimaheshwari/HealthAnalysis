@@ -38,7 +38,7 @@ object InsuranceAvailedForWindow3 {
 
        val dfDemographic=spark.read
                   .format("csv")
-                  .option("path","D:/HealthDataSpark/input/demographic.csv")
+                  .option("path","inputFiles/demographic.csv")
                   .option("header",true)
                   .schema("seqn Integer, familyMember Integer, location Integer, income Integer, insuranceAmount Double")  //  .option("inferSchema",true)
                   .load
@@ -58,7 +58,7 @@ object InsuranceAvailedForWindow3 {
           .format("csv")
           .mode(SaveMode.Overwrite)
           .option("header", true)
-          .option("path","D:/HealthDataSpark/output/InsuranceAvailedForWindow3")
+          .option("path","outputFiles/InsuranceAvailedForWindow3")
           .save
           
           

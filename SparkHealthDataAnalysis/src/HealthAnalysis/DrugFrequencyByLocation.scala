@@ -31,7 +31,7 @@ object DrugFrequencyByLocation {
        import spark.implicits._     // to used operations on df like filter etc.
        val dfMedications=spark.read
                   .format("csv")
-                  .option("path","D:/HealthDataSpark/input/medications.csv")
+                  .option("path","inputFiles/medications.csv")
                   .option("header",true)
                   .schema("seqn String,noOfMedicines Integer,drugName String")  //  .option("inferSchema",true)
                   .load
@@ -64,7 +64,7 @@ object DrugFrequencyByLocation {
 
        val dfDemographic=spark.read
                   .format("csv")
-                  .option("path","D:/HealthDataSpark/input/demographic.csv")
+                  .option("path","inputFiles/demographic.csv")
                   .option("header",true)
                   .schema("seqn Integer,familyMember Integer,location Integer")  //  .option("inferSchema",true)
                   .load
@@ -109,7 +109,7 @@ object DrugFrequencyByLocation {
           .format("csv")
           .mode(SaveMode.Overwrite)
           .option("header", true)
-          .option("path","D:/HealthDataSpark/output/DrugFrequencyByLocation")
+          .option("path","outputFiles/DrugFrequencyByLocation")
           .save
           
           
