@@ -100,8 +100,14 @@ object DrugFrequencyByLocation {
                              .withColumn("frequency", expr("coalesce(frequency,0)"))
                              .groupBy("drugName")
                              .pivot("location")
-                             .sum("frequency")
-//                      .show(10)
+                             .agg(sum("frequency"))
+                             .withColumnRenamed("1", "location_1")
+                             .withColumnRenamed("2", "location_2")
+                             .withColumnRenamed("3", "location_3")
+                             .withColumnRenamed("4", "location_4")
+                             .withColumnRenamed("5", "location_5")
+                             
+//                      .show(5)
                   
                 
                     
