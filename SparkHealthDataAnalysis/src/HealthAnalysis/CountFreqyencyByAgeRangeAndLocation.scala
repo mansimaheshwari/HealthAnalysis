@@ -32,7 +32,7 @@ object CountFreqyencyByAgeRangeAndLocation {
       
       val spark=SparkSession.builder()                      
                             .config(sparkConf)
-                            .config("spark.sql.shuffle.partitions","10")    // to make the no of partitions to 3 instead of 200 (spark default)
+                            .config("spark.sql.shuffle.partitions","1")    // to make the no of partitions to 3 instead of 200 (spark default)
                             .getOrCreate()
     
 
@@ -77,7 +77,7 @@ object CountFreqyencyByAgeRangeAndLocation {
                                  SUM(CASE WHEN (location=4) THEN 1 ELSE 0 END) AS location4,
                                  SUM(CASE WHEN (location=5) THEN 1 ELSE 0 END) AS location5
                          from table  group by ageRange order by ageRange""")
-//                      .show()
+//                      .show(10)
     
 
       out.write
